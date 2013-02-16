@@ -10,15 +10,6 @@ class GithubPlaintextRenderer
     @verbose = verbose
   end
 
-  def render(event)
-    output = process_event(event)
-    if verbose
-      long(event, output)
-    else
-      short(event, output)
-    end
-  end
-
   def process_event(event)
     payload = event.data["payload"]
     repo = ", repo " + event.data["repo"]["name"]
