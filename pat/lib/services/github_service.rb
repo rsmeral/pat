@@ -3,19 +3,23 @@ require 'date'
 require 'net/http'
 require_relative '../model/event'
 require_relative '../model/query'
+require_relative '../renderers/github_plaintext_renderer'
 
 class GithubService
 
   def events(query)
+    renderer = GithubPlaintextRenderer.new(false)
     ret = Array.new
     json_array = JSON.parse(github_query(query.user))
     json_array.each do |event_json|
       event = event_from_json(event_json)
 
       if (event.time < query.to && event.time > query.from)
+        renderer.render(event)
         ret << event
       end
     end
+
     ret
   end
 
@@ -43,3 +47,10 @@ class GithubService
   end
 
 end
+
+query = Query.new("okiss")
+query.from = DateTime.new(2013,1,14)
+query.to = DateTime.now
+
+GithubService.new.events(query)
+
