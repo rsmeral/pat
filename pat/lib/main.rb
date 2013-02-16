@@ -1,5 +1,9 @@
-require_relative 'jira_service'
+require_relative 'services/jira_service'
+
 jira_instance = JiraService.new
 jira_instance.serviceUrl = "http://issues.jboss.org"
-jira_instance.apiPath
+puts jira_instance.api_path
 
+class A
+  
+end

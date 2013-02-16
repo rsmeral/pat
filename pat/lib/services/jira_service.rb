@@ -7,8 +7,12 @@ class JiraService
   def initialize
   end
   
-  def apiPath
-    puts serviceUrl + @@Jira_API_path
+  def api_path
+    serviceUrl + @@Jira_API_path
+  end
+  
+  def get_events(query)
+    
   end
   
 end
