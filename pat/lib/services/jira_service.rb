@@ -1,4 +1,4 @@
-class Jira_Service
+class JiraService
   
   @@Jira_API_path = "/rest/api/latest"
   

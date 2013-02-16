@@ -1,14 +1,14 @@
 class Event
-  attr_accessor :time, :text
+  attr_accessor :time, :data
   attr_reader :service 
   
   def initialize(service)
     @service = service
   end
   
-  def initialize(service, time, text)
+  def initialize(service, time, data)
     initialize(service)
-    @time, @text = time, text
+    @time, @data = time, data
   end
   
 end

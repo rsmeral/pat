@@ -1,4 +1,4 @@
-class Service_Configuration
+class ServiceConfiguration
   attr_reader :clazz, :params
   
   def initialize(clazz, params)
