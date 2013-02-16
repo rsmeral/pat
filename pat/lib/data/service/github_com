@@ -1,1 +1,2 @@
---- !ruby/object:GithubService {}
+--- !ruby/object:GithubService
+id: github_com

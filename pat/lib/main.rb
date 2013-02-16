@@ -1,28 +1,16 @@
 require 'optparse'
+require 'date'
 require_relative 'person_manager'
 require_relative 'service_manager'
 require_relative 'model/person'
-require_relative 'services/jira_service'
-require_relative 'services/github_service'
 
-
-# parse services
-# Dir.glob("services/*.rb").each { |item| 
-#  require_relative item
-  
-#}
-
-# parse renderers
-# parse settings (persons, service configurations)
-
-# get events for person
-# get service_configurations
-# 
+Dir["services/*"].each {|file| require_relative file }
+Dir["renderers/*"].each {|file| require_relative file }
  
-# Usage: 
+# Usage: /path/to/directory/*.rb
 #               verbose                      force update 
 #       user/proj  svc. configurations  time period
-#   pat rsmeral -v -c github,jboss_jira -d 7 -f 
+#   pat rsmeral -v -c github,jboss_jira -d 7 -f -r html
 
 begin
   
@@ -30,7 +18,8 @@ begin
   options = {
     days: 7,
     force: false,
-    verbose: false
+    verbose: false,
+    renderer: :plaintext
   }
 
   selected_persons = []
@@ -60,6 +49,10 @@ begin
     opt.on("-d","--days [n]","Numeric", "number of past days from today to query") do |days|
       options[:days] = days
     end
+    
+    opt.on("-r","--renderer [format]","String", "output format; fallback to plaintext if not found") do |renderer|
+      options[:renderer] = renderer
+    end
   
   end
 
@@ -76,15 +69,31 @@ begin
     
     # For each service configuration
     person.service_mappings.each_pair do |service_id, user_id|
-      svc_instance = ServiceManager.service_instance(service_id)
+      if options[:selected_configurations].include?(service_id) then
+        # Instantiate service
+        svc_instance = ServiceManager.service_instance(service_id)
+
+        # Prepare query
+        query = Query.new(user_id)
+        query.to = DateTime.now
+        query.from = DateTime.now - Integer(options[:days])
       
-      svc_instance.events(Query.new(user_id))
+        # Fetch data
+        puts events = svc_instance.events(query)
       
+        # Find renderer
+        renderer_name = svc_instance.class.to_s.chomp("Service") + String.new(options[:renderer].to_s).capitalize + "Renderer"
+        begin
+          renderer = Object.const_get(renderer_name).inspect
+        rescue
+          puts "WARNING: Renderer #{renderer_name} not found. Falling back to plaintext."
+          renderer = Object.const_get(svc_instance.class.to_s.chomp("Service") + "PlaintextRenderer")
+        end
+        
+        renderer.render(events)
+      end
     end
   end
-
-  # puts options.inspect
-  # puts selected_persons.inspect
   
 rescue Exception => e
   puts "Error!"
