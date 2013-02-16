@@ -1,0 +1,12 @@
+0. Jira service
+
+1.
+- introduce options for grouping by day or by person
+- main calls global renderer
+- global renderer calls service renderers per event
+
+2. 
+- Caching of HTTP requests
+
+3. 
+- interactive CLI for service/person definition
