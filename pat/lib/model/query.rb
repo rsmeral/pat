@@ -1,8 +1,8 @@
 class Query
-  attr_accessor :user, :from, :to, :params
+  attr_accessor :person, :from, :to, :params
   
-  def initialize(user)
-    @user = user
+  def initialize(person)
+    @person = person
   end
   
 end

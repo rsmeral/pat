@@ -68,13 +68,13 @@ Dir["renderers/*"].each {|file| require_relative file }
     person = PersonManager.person(id)
     
     # For each service configuration
-    person.service_mappings.each_pair do |service_id, user_id|
+    person.service_mappings.each do |service_id|
       if options[:selected_configurations].include?(service_id) then
         # Instantiate service
         svc_instance = ServiceManager.service_instance(service_id)
 
         # Prepare query
-        query = Query.new(user_id)
+        query = Query.new(person)
         query.to = DateTime.now
         query.from = DateTime.now - Integer(options[:days])
       

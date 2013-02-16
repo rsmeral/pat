@@ -1,5 +1,5 @@
 class Event
-  attr_accessor :time, :data
+  attr_accessor :time, :data, :person
   attr_reader :service
   
   def initialize(service)

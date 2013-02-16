@@ -3,17 +3,20 @@ require 'date'
 require 'net/http'
 require_relative '../model/event'
 require_relative '../model/query'
-require_relative '../renderers/github_plaintext_renderer'
 
 class GithubService
 
+  include ServiceHelper
+  
   attr_accessor :id
   
   def events(query)
     ret = Array.new
-    json_array = JSON.parse(github_query(query.user))
+    json_array = JSON.parse(github_query(user_id(query.person)))
     json_array.each do |event_json|
       event = event_from_json(event_json)
+      event.person = query.person
+      
       if (event.time < query.to && event.time > query.from)
         ret << event
       end
@@ -28,7 +31,7 @@ class GithubService
     event = Event.new(self)
     event.time = DateTime.iso8601(json_data["created_at"])
     event.data = json_data
-
+    
     event
   end
 
