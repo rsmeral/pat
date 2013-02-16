@@ -88,6 +88,7 @@ begin
         rescue
           puts "WARNING: Renderer #{renderer_name} not found. Falling back to plaintext."
           renderer = Object.const_get(svc_instance.class.to_s.chomp("Service") + "PlaintextRenderer")
+          renderer.new(options[:verbose])
         end
         
         renderer.render(events)
