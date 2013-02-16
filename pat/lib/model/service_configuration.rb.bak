@@ -1,0 +1,15 @@
+class ServiceConfiguration
+  
+  # Unique identifier, used as configuration file name
+  attr_reader :id
+  
+  # Name of the service class
+  attr_reader :class_name
+  
+  # A hash of initialization parameters for the service
+  attr_reader :params
+  
+  def initialize(class_name, params)
+    @class_name, @params = class_name, params
+  end
+end

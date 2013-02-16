@@ -1,18 +1,26 @@
+require_relative '../model/query'
+
 class JiraService
   
-  @@Jira_API_path = "/rest/api/latest"
+  attr_reader :id
   
-  attr_accessor :serviceUrl
+  # URL of the instance, e.g. http://issues.jboss.org
+  attr_accessor :instance_url
+  
+  # API path, e.g. /rest/api/latest
+  attr_accessor :api_path
 
-  def initialize
-  end
-  
-  def api_path
-    serviceUrl + @@Jira_API_path
+  def initialize(id, instance_url, api_path)
+    @id, @instance_url, @api_path = id, instance_url, api_path
   end
   
   def get_events(query)
+    person = query.person.name
     
+  end
+  
+  def api_url 
+    "#{instance_url}#{api_path}"
   end
   
 end
