@@ -13,7 +13,7 @@ module PlaintextRendererHelper
   def long(messages)
     ret = ""
     messages.each do |message|
-      ret << message.day + " " + message.time + "\n" + message.content + "\n------------------------------------------"
+      ret << message.day + ", " + message.time + "\n" + message.content + "\n------------------------------------------\n"
       last_day = message.day
     end
 
@@ -36,7 +36,9 @@ module PlaintextRendererHelper
     message.day = event.time.strftime("%b %d")
     message.time = event.time.strftime("%H:%M")
     message.user = "jozo"
-    message.content = base.process_event(event)
+    message.content = process_event(event)
+
+    message
   end
 
 end

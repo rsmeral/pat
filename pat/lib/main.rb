@@ -12,7 +12,7 @@ Dir["renderers/*"].each {|file| require_relative file }
 #       user/proj  svc. configurations  time period
 #   pat rsmeral -v -c github,jboss_jira -d 7 -f -r html
 
-begin
+# begin
   
   # Defaults
   options = {
@@ -90,12 +90,12 @@ begin
           renderer_class = Object.const_get(svc_instance.class.to_s.chomp("Service") + "PlaintextRenderer")
         end
         renderer = renderer_class.new(options[:verbose])
-        renderer.render(events)
+        puts renderer.render(events)
       end
     end
   end
   
-rescue Exception => e
-  puts "Error!"
-  puts e.message
-end
+# rescue Exception => e
+#   puts "Error!"
+#   puts e
+# end
