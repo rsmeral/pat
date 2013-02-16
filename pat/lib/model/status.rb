@@ -6,9 +6,4 @@ class Status
     @service = service
   end
   
-  def initialize(service, time, data)
-    initialize(service)
-    @time, @data = time, data
-  end
-  
 end
