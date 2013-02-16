@@ -1,5 +1,5 @@
 class PlaintextMessage
-  attr_accessor :day, :time, :user, :content
+  attr_accessor :day, :time, :person, :content
   
   def initialize()
   end

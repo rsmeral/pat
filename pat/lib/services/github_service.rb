@@ -3,6 +3,7 @@ require 'date'
 require 'net/http'
 require_relative '../model/event'
 require_relative '../model/query'
+require_relative 'service_helper'
 
 class GithubService
 

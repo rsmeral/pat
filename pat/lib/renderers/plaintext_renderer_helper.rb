@@ -1,10 +1,14 @@
 module PlaintextRendererHelper
   def short(messages)
     ret = ""
+    last_person = ""
+    last_day = ""
     messages.each do |message|
+      ret << "#{message.person}\n" if last_person != message.person
       ret << "#{message.day}\n" if last_day != message.day
       ret << "  " + message.time + "\t" + message.content + "\n"
       last_day = message.day
+      last_person = message.person
     end
 
     ret
@@ -13,8 +17,7 @@ module PlaintextRendererHelper
   def long(messages)
     ret = ""
     messages.each do |message|
-      ret << message.day + ", " + message.time + "\n" + message.content + "\n------------------------------------------\n"
-      last_day = message.day
+      ret << message.day + ", " + message.time + "\t" + message.person + "\n" + message.content + "\n------------------------------------------\n"
     end
 
     ret
@@ -35,7 +38,7 @@ module PlaintextRendererHelper
     message = PlaintextMessage.new
     message.day = event.time.strftime("%b %d")
     message.time = event.time.strftime("%H:%M")
-    message.user = "jozo"
+    message.person = event.person.name
     message.content = process_event(event)
 
     message

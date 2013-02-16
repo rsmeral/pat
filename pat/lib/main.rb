@@ -68,7 +68,7 @@ Dir["renderers/*"].each {|file| require_relative file }
     person = PersonManager.person(id)
     
     # For each service configuration
-    person.service_mappings.each do |service_id|
+    person.service_mappings.each_key do |service_id|
       if options[:selected_configurations].include?(service_id) then
         # Instantiate service
         svc_instance = ServiceManager.service_instance(service_id)
