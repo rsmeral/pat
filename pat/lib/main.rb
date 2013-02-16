@@ -79,18 +79,17 @@ begin
         query.from = DateTime.now - Integer(options[:days])
       
         # Fetch data
-        puts events = svc_instance.events(query)
+        events = svc_instance.events(query)
       
         # Find renderer
         renderer_name = svc_instance.class.to_s.chomp("Service") + String.new(options[:renderer].to_s).capitalize + "Renderer"
         begin
-          renderer = Object.const_get(renderer_name).inspect
+          renderer_class = Object.const_get(renderer_name).inspect
         rescue
           puts "WARNING: Renderer #{renderer_name} not found. Falling back to plaintext."
-          renderer = Object.const_get(svc_instance.class.to_s.chomp("Service") + "PlaintextRenderer")
-          renderer.new(options[:verbose])
+          renderer_class = Object.const_get(svc_instance.class.to_s.chomp("Service") + "PlaintextRenderer")
         end
-        
+        renderer = renderer_class.new(options[:verbose])
         renderer.render(events)
       end
     end

@@ -10,7 +10,7 @@ module PlaintextRendererHelper
     ret
   end
 
-  def long(message)
+  def long(messages)
     ret = ""
     messages.each do |message|
       ret << message.day + " " + message.time + "\n" + message.content + "\n------------------------------------------"
