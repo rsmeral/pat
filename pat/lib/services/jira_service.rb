@@ -18,8 +18,8 @@ class JiraService
   attr_accessor :api_path
   
   def events(query)
-   JSON.parse(jira_query(query))["issues"].map do |json_evt|
-    # JSON.parse(File.read("rsmeral_issues.json"))["issues"].map do |json_evt|
+  JSON.parse(jira_query(query))["issues"].map do |json_evt|
+   # JSON.parse(File.read("rsmeral_issues.json"))["issues"].map do |json_evt|
       event = event_from_json(json_evt)
       event.person = query.person
       event
@@ -36,11 +36,10 @@ class JiraService
   def jira_query(query)
     params = {
       jql: "reporter=#{user_id(query.person)} AND createdDate>=#{query.from.to_date} AND createdDate<=#{query.to.to_date} ORDER BY created DESC, key DESC",
-      fields: "key,summary,issuetype,priority,status,reporter,description,created"
+      fields: "key,summary,issuetype,priority,status,reporter,description,created,assignee,resolution"
     }
     uri = URI ("#{api_url}/search")
     uri.query = URI.encode_www_form(params)
-    puts uri 
     http = Net::HTTP.new(uri.host, uri.port)
     response = http.request(Net::HTTP::Get.new(uri.request_uri))
 
