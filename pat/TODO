@@ -1,12 +1,5 @@
-0. Jira service
+0. BZ service
 
-1.
-- introduce options for grouping by day or by person
-- main calls global renderer
-- global renderer calls service renderers per event
+1. JSON renderer
 
-2. 
-- Caching of HTTP requests
-
-3. 
-- interactive CLI for service/person definition
+2. Caching of HTTP requests

@@ -10,10 +10,10 @@ class PlaintextRenderer
   def render(messages, depth = 0)
     ret = ""
     if messages.class == Hash
-      ret << indent(render_hash(messages, depth + 1))
+      ret << indent(render_hash(messages, depth + 1), depth)
       ret << "\n"
     elsif messages.class == Array
-      ret << indent(render_list(messages, depth + 1))
+      ret << indent(render_list(messages, depth + 1), depth)
     end
 
     ret
@@ -45,7 +45,7 @@ class PlaintextRenderer
       headers.each do |header|
         ret << message.send(header) + "    "
       end
-        ret << message.header + "\n"
+      ret << message.header + "\n"
     end
     ret
   end
@@ -58,14 +58,18 @@ class PlaintextRenderer
       end
       ret << "\n" + message.header
       ret << "\n" + message.content if !message.content.nil?
-      ret <<"\n------------------------------------------\n"
+      ret << "\n------------------------------------------\n"
     end
 
     ret
   end
 
-  def indent(string)
-    string
+  def indent(str, depth)
+    out = ""
+    str.lines("\n") do |line|
+      out << (" "*depth) + line
+    end
+    out
     # string.gsub("\n", "\n ")# + (" " * (width * 2)))
   end
 

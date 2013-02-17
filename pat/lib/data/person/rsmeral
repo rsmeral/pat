@@ -4,3 +4,4 @@ name: Ron Smeral
 service_mappings:
   jboss_jira: rsmeral
   github_com: rsmeral
+  rh_bz: rsmeral@redhat.com

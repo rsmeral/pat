@@ -18,8 +18,8 @@ class JiraService
   attr_accessor :api_path
   
   def events(query)
-  # JSON.parse(jira_query(query))["issues"].map do |json_evt|
-   JSON.parse(File.read("rsmeral_issues.json"))["issues"].map do |json_evt|
+    # JSON.parse(jira_query(query))["issues"].map do |json_evt|
+    JSON.parse(File.read("rsmeral_issues.json"))["issues"].map do |json_evt|
       event = event_from_json(json_evt)
       event.person = query.person
       event
@@ -44,7 +44,7 @@ class JiraService
     response = http.request(Net::HTTP::Get.new(uri.request_uri))
 
     if response.code != "200"
-      raise 'Error when accessing Jira: #{response.code} #{response.message}'
+      raise "Error when accessing Jira: #{response.code} #{response.message}"
     end
 
     response.body

@@ -18,7 +18,7 @@ class RendererManager
   end
 
   def format_renderer(format)
-    renderer_name = format.capitalize + "Renderer"
+    renderer_name = format.to_s.capitalize + "Renderer"
 
     begin
       renderer_class = Object.const_get(renderer_name)

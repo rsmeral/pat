@@ -49,7 +49,7 @@ class GithubService
     response = http.request(Net::HTTP::Get.new(uri.request_uri))
 
     if response.code != "200"
-      raise 'Error when accessing GitHub: #{response.code} #{response.message}'
+      raise "Error when accessing GitHub: #{response.code} #{response.message}"
     end
 
     response.body
