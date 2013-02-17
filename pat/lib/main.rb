@@ -2,6 +2,7 @@ require 'optparse'
 require 'date'
 require_relative 'person_manager'
 require_relative 'service_manager'
+require_relative 'basic_service_client'
 require_relative 'model/person'
 
 Dir["services/*"].each {|file| require_relative file }
@@ -81,7 +82,7 @@ selected_persons.each do |id|
       query.from = DateTime.now - Integer(options[:days])
       
       # Fetch data
-      events = svc_instance.events(query)
+      events = BasicServiceClient.do_query(svc_instance, query)
       all_events.concat(events)
     end# if selected
   end# each service
