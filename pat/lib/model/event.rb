@@ -6,4 +6,8 @@ class Event
     @service = service
   end
   
+  def to_s 
+    "#{time} #{person.id}"
+  end
+  
 end
