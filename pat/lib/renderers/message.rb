@@ -3,9 +3,5 @@ class Message
   
   def initialize()
   end
-
-  def to_s
-    header
-  end
   
 end

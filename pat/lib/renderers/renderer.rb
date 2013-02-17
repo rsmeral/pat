@@ -18,7 +18,7 @@ class Renderer
     end.map do |event|
       service_renderer(event.service).message_from_event(event)
     end
-    
+
     # create deep equivalence class map
     message_classes = make_eq(messages, 0)
 
