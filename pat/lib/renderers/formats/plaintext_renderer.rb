@@ -1,38 +1,65 @@
 
 class PlaintextRenderer
-  def short(messages)
+  attr_accessor :verbose, :group
+
+  def initialize(verbose)
+    @verbose = verbose
+  end
+
+  def render(messages, depth = 0)
     ret = ""
-    last_person = ""
-    last_day = ""
-    messages.each do |message|
-      ret << "#{message.person}\n" if last_person != message.person
-      ret << "#{message.day}\n" if last_day != message.day
-      ret << "  " + message.time + "\t" + message.content + "\n"
-      last_day = message.day
-      last_person = message.person
+    if messages.class == Hash
+      ret << indent(render_hash(messages, depth + 1), depth)
+      ret << "\n"
+    elsif messages.class == Array
+      ret << indent(render_list(messages, depth + 1), depth)
     end
 
     ret
   end
 
-  def long(messages)
+  private
+
+  def render_hash(messages, depth)
     ret = ""
-    messages.each do |message|
-      ret << message.day + ", " + message.time + "\t" + message.person + "\n" + message.content + "\n------------------------------------------\n"
+    messages.each_pair do |header, hash|
+      ret << header + "\n"
+      ret << render(hash, depth + 1)
     end
 
     ret
   end
 
-  def render(events)
-    messages = events.collect do |event|
-      message_from_event(event)
-    end
+  def render_list(messages, depth)
     if verbose
-      long(messages)
+      long(messages, depth)
     else
-      short(messages)
+      short(messages, depth)
     end
+  end
+
+  def short(messages, depth)
+    ret = ""
+    messages.each do |message|
+      ret << message.time + "\t" + message.header + "\n"
+    end
+    ret
+  end
+
+  def long(messages, depth)
+    ret = ""
+    messages.each do |message|
+      ret << message.day + ", " + message.time + "\t" + message.person + "\n" + message.header
+      ret << "\n" + message.content if !message.content.nil?
+      ret <<"\n------------------------------------------\n"
+    end
+
+    ret
+  end
+
+  def indent(string, width)
+    string
+    # string.gsub("\n", "X\n")# + (" " * (width * 2)))
   end
 
 end

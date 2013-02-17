@@ -6,7 +6,7 @@ require_relative 'basic_service_client'
 require_relative 'model/person'
 require_relative 'renderers/renderer'
 
-Dir["services/*"].each {|file| require_relative file }
+Dir["services/*rb"].each {|file| require_relative file }
 # Dir["renderers/*"].each {|file| require_relative file }
 
 # begin

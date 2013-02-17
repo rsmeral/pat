@@ -18,8 +18,8 @@ class Renderer
     end
     # create deep equivalence class map
     message_classes = make_eq(messages, 0)
-    # recursively render
-    recursive_render(message_classes)
+
+    @renderer_manager.format_renderer(format).render(message_classes)
   end
   
   # convert message list to map of equivalence classes
@@ -51,8 +51,8 @@ class Renderer
     end
   end
   
-  def recursive_render(messages) 
-    puts messages.inspect
+  def recursive_render(messagehash)
+    # @renderer_manager.format_renderer(format).render(messagehash)
     # check if list or hash
     # iterate over h.keys.sort
   end
