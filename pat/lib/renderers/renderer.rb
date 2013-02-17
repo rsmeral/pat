@@ -13,9 +13,12 @@ class Renderer
   end
   
   def render(events)
-    messages = events.map do |event|
+    messages = events.sort do |a, b|
+      b.time <=> a.time
+    end.map do |event|
       service_renderer(event.service).message_from_event(event)
     end
+    
     # create deep equivalence class map
     message_classes = make_eq(messages, 0)
 
@@ -38,12 +41,6 @@ class Renderer
     else 
       return message_list;
     end
-  end
-  
-  def recursive_render(messagehash)
-    # @renderer_manager.format_renderer(format).render(messagehash)
-    # check if list or hash
-    # iterate over h.keys.sort
   end
 
   def service_renderer(service)
