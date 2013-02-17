@@ -17,7 +17,8 @@ options = {
   force: false,
   verbose: false,
   renderer: :plaintext,
-  group: ["person", "date"]
+  group: ["person", "date"],
+  selected_configurations: ServiceManager.list_services
 }
 
 selected_persons = []
