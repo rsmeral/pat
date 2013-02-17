@@ -3,10 +3,11 @@ Dir["renderers/formats/*.rb"].each {|file| require_relative file }
 
 class RendererManager
 
-  attr_accessor :verbose
+  attr_accessor :verbose, :group
 
-  def initialize(verbose)
+  def initialize(verbose, group)
     @verbose = verbose
+    @group = group
   end
 
   def service_renderer(service)
@@ -26,7 +27,7 @@ class RendererManager
       renderer_class = Object.const_get("PlaintextRenderer")
     end
 
-    renderer_class.new(verbose)
+    renderer_class.new(verbose, group)
   end
 
 end

@@ -18,8 +18,8 @@ class JiraService
   attr_accessor :api_path
   
   def events(query)
-  JSON.parse(jira_query(query))["issues"].map do |json_evt|
-   # JSON.parse(File.read("rsmeral_issues.json"))["issues"].map do |json_evt|
+  # JSON.parse(jira_query(query))["issues"].map do |json_evt|
+   JSON.parse(File.read("rsmeral_issues.json"))["issues"].map do |json_evt|
       event = event_from_json(json_evt)
       event.person = query.person
       event

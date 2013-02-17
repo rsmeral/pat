@@ -8,7 +8,7 @@ class Renderer
   def initialize(verbose, group, format)
     @verbose, @group, @format = verbose, group, format
 
-    @renderer_manager = RendererManager.new(verbose)
+    @renderer_manager = RendererManager.new(verbose, group)
     @renderer_cache = {}
   end
   
@@ -29,7 +29,7 @@ class Renderer
     if depth < group.length
       res = {}
       message_list.each do |message|
-        (res[val(message,group[depth])] ||= []) << message
+        (res[message.send(group[depth])] ||= []) << message
       end
       res.each_pair do |cls, sub_messages|
         res[cls] = make_eq(sub_messages, depth+1)
@@ -37,17 +37,6 @@ class Renderer
       res
     else 
       return message_list;
-    end
-  end
-  
-  def val(message,criterion) 
-    case criterion
-      when "person"
-        message.person
-      when "date"
-        message.day
-      when "service"
-        message.service
     end
   end
   

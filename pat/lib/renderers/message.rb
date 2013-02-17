@@ -1,5 +1,5 @@
 class Message
-  attr_accessor :day, :time, :person, :service, :header, :content
+  attr_accessor :date, :time, :person, :service, :header, :content
   
   def initialize()
   end

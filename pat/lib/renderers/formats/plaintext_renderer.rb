@@ -1,18 +1,19 @@
 
 class PlaintextRenderer
-  attr_accessor :verbose, :group
+  attr_accessor :verbose, :headers
 
-  def initialize(verbose)
+  def initialize(verbose, group)
     @verbose = verbose
+    @headers = [:date, :time, :person, :service] - group.map {|x| x.to_sym}
   end
 
   def render(messages, depth = 0)
     ret = ""
     if messages.class == Hash
-      ret << indent(render_hash(messages, depth + 1), depth)
+      ret << indent(render_hash(messages, depth + 1))
       ret << "\n"
     elsif messages.class == Array
-      ret << indent(render_list(messages, depth + 1), depth)
+      ret << indent(render_list(messages, depth + 1))
     end
 
     ret
@@ -41,7 +42,10 @@ class PlaintextRenderer
   def short(messages, depth)
     ret = ""
     messages.each do |message|
-      ret << message.time + "\t" + message.header + "\n"
+      headers.each do |header|
+        ret << message.send(header) + "    "
+      end
+        ret << message.header + "\n"
     end
     ret
   end
@@ -49,7 +53,10 @@ class PlaintextRenderer
   def long(messages, depth)
     ret = ""
     messages.each do |message|
-      ret << message.day + ", " + message.time + "\t" + message.person + "\n" + message.header
+      headers.each do |header|
+        ret << message.send(header) + "    "
+      end
+      ret << "\n" + message.header
       ret << "\n" + message.content if !message.content.nil?
       ret <<"\n------------------------------------------\n"
     end
@@ -57,9 +64,13 @@ class PlaintextRenderer
     ret
   end
 
-  def indent(string, width)
+  def indent(string)
     string
-    # string.gsub("\n", "X\n")# + (" " * (width * 2)))
+    # string.gsub("\n", "\n ")# + (" " * (width * 2)))
+  end
+
+  def header_data
+    [:date, :time, :person, :service]
   end
 
 end
