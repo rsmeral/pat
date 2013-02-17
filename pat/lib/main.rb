@@ -53,7 +53,7 @@ opt_parser = OptionParser.new do |opt|
   end
   
   opt.on("-g","--group [person,date,service]","Array", "comma-separated list; two element permutation of person,date,service; specifies grouping of events on output") do |group|
-    options[:group] = group.split(",")
+    options[:group] = group.nil? ? [] : group.split(",")
   end
   
 end
@@ -89,17 +89,6 @@ selected_persons.each do |id|
   end# each service
 end# each person
 
-# Find renderer
-renderer_name = String.new(options[:renderer].to_s).capitalize + "Renderer"
-#renderer_name = svc_instance.class.to_s.chomp("Service") + global_renderer_name
-
-# begin
-#   renderer_class = Object.const_get(renderer_name)
-# rescue
-#   puts "WARNING: Renderer #{renderer_name} not found. Falling back to plaintext."
-#   renderer_class = Object.const_get("PlaintextRenderer")
-# end
-# renderer = renderer_class.new(options[:verbose], options[:group])
 renderer = Renderer.new(options[:verbose], options[:group], options[:renderer])
 puts renderer.render(all_events)
   
