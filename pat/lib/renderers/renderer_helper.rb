@@ -1,4 +1,4 @@
-class RendererHelper
+module RendererHelper
   
   attr_accessor :verbose, :group
   
@@ -45,6 +45,7 @@ class RendererHelper
   end
   
   def recursive_render(events) 
+    puts events.inspect
     # check if list or hash
     # iterate over h.keys.sort
   end
