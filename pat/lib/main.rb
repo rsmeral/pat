@@ -4,9 +4,10 @@ require_relative 'person_manager'
 require_relative 'service_manager'
 require_relative 'basic_service_client'
 require_relative 'model/person'
+require_relative 'renderers/renderer'
 
 Dir["services/*"].each {|file| require_relative file }
-Dir["renderers/*"].each {|file| require_relative file }
+# Dir["renderers/*"].each {|file| require_relative file }
 
 # begin
   
@@ -92,13 +93,14 @@ end# each person
 renderer_name = String.new(options[:renderer].to_s).capitalize + "Renderer"
 #renderer_name = svc_instance.class.to_s.chomp("Service") + global_renderer_name
 
-begin
-  renderer_class = Object.const_get(renderer_name)
-rescue
-  puts "WARNING: Renderer #{renderer_name} not found. Falling back to plaintext."
-  renderer_class = Object.const_get("PlaintextRenderer")
-end
-renderer = renderer_class.new(options[:verbose], options[:group])
+# begin
+#   renderer_class = Object.const_get(renderer_name)
+# rescue
+#   puts "WARNING: Renderer #{renderer_name} not found. Falling back to plaintext."
+#   renderer_class = Object.const_get("PlaintextRenderer")
+# end
+# renderer = renderer_class.new(options[:verbose], options[:group])
+renderer = Renderer.new(options[:verbose], options[:group], options[:renderer])
 puts renderer.render(all_events)
   
 # rescue Exception => e
