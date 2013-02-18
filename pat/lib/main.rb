@@ -77,6 +77,8 @@ ARGV.each do |arg|
   selected_persons << arg
 end
 
+selected_persons = PersonManager.list_persons if selected_persons.empty?
+
 all_events = []
 
 # For each enabled service configuration
