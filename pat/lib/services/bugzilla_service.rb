@@ -21,7 +21,8 @@ class BugzillaService
     bug_ids = bz_list(query)
     
     bugs = XmlSimple.xml_in(bz_query(bug_ids))
-    # bugs = XmlSimple.xml_in(File.read("bz.xml"))
+    # bugs = XmlSimple.xml_in(File.read("demo/bz_#{query.person.id}.xml")) # DEMO
+    
     (bugs["bug"].nil? ? {} : bugs["bug"]).map do |bug|
       event = event_from_xml(bug)
       event.person = query.person
@@ -59,10 +60,7 @@ class BugzillaService
   end 
   
   def bz_list(query)
-#    csv = File.read("bugs-2013-02-17.csv") # REMOVE REMOVE REMOVE REMOVE REMOVE REMOVE REMOVE REMOVE 
-#    return CSV.parse(csv).drop(1).collect do |item|
-#      item[0]
-#    end
+    # return CSV.parse(File.read("demo/bz_#{query.person.id}.csv")).drop(1).collect { |item| item[0] } # DEMO
     
     params = {
       f1: "reporter",
@@ -91,10 +89,7 @@ class BugzillaService
       raise 'Error when accessing Jira: #{response.code} #{response.message}'
     end
     
-    csv = response.body
-    CSV.parse(csv).drop(1).collect do |item|
-      item[0]
-    end
+    CSV.parse(response.body).drop(1).collect { |item| item[0] }
   end
   
 end

@@ -37,11 +37,7 @@ class GithubService
   end
 
   def github_query(user)
-    if user == "okiss"
-      return File.open(File.dirname(__FILE__) + '/okiss.txt', 'r') { |file| file.read }
-    elsif user == "rsmeral"
-      return File.open(File.dirname(__FILE__) + '/rsmeral.txt', 'r') { |file| file.read }
-    end
+    # return File.read("demo/git_#{user}.txt") # DEMO
 
     uri = URI.parse("https://api.github.com/users/#{user}/events/public")
     http = Net::HTTP.new(uri.host, uri.port)

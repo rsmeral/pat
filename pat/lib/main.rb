@@ -2,7 +2,6 @@ require 'optparse'
 require 'date'
 require_relative 'person_manager'
 require_relative 'service_manager'
-require_relative 'basic_service_client'
 require_relative 'model/person'
 require_relative 'renderers/renderer'
 
@@ -42,7 +41,7 @@ opt_parser = OptionParser.new do |opt|
   end
   
   opt.on("-c","--configurations [x,y,z]","Array", "comma-separated list of service configurations to query") do |configurations|
-    options[:selected_configurations] = configurations.split(",")
+    options[:selected_configurations] = configurations.nil? ? [] : configurations.split(",")
   end
   
   opt.on("-d","--days [n]","Numeric", "number of past days from today to query") do |days|
@@ -74,7 +73,7 @@ selected_persons.each do |id|
     
   # For each service configuration
   person.service_mappings.each_key do |service_id|
-    if options[:selected_configurations].empty? || options[:selected_configurations].include?(service_id) then
+    if options[:selected_configurations].nil? || options[:selected_configurations].include?(service_id) then
       # Instantiate service
       svc_instance = ServiceManager.service_instance(service_id)
 
@@ -84,7 +83,7 @@ selected_persons.each do |id|
       query.from = DateTime.now - Integer(options[:days])
       
       # Fetch data
-      events = BasicServiceClient.do_query(svc_instance, query)
+      events = svc_instance.events(query)
       all_events.concat(events)
     end# if selected
   end# each service
