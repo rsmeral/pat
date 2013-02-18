@@ -48,7 +48,7 @@ opt_parser = OptionParser.new do |opt|
     options[:days] = days
   end
     
-  opt.on("-f","--format [format]","String", "output format; fallback to plaintext if not found") do |renderer|
+  opt.on("-r","--renderer [format]","String", "output format; fallback to plaintext if not found") do |renderer|
     options[:renderer] = renderer
   end
   
