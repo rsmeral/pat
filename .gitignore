@@ -17,3 +17,4 @@ tmp
 _yardoc
 doc/
 /pat/nbproject/private/
+pat/lib/data/cache

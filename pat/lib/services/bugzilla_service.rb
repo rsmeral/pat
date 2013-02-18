@@ -48,11 +48,7 @@ class BugzillaService
     }
     uri = URI ("#{instance_url}/show_bug.cgi")
     data = URI.encode_www_form(params)
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl= true
-    req = Net::HTTP::Post.new(uri.request_uri)
-    req.body = data;
-    response = http.request(req)
+    response = CachedHttpClient.post(uri, data)
     
     if response.code != "200"
       raise "Error when accessing Bugzilla: #{response.code} #{response.message}"
@@ -83,9 +79,7 @@ class BugzillaService
     }
     uri = URI ("#{instance_url}/buglist.cgi")
     uri.query = URI.encode_www_form(params)
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl= true
-    response = http.request(Net::HTTP::Get.new(uri.request_uri))
+    response = CachedHttpClient.get(uri)
 
     if response.code != "200"
       raise 'Error when accessing Jira: #{response.code} #{response.message}'

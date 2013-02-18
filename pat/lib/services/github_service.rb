@@ -40,9 +40,7 @@ class GithubService
     # return File.read("demo/git_#{user}.txt") # DEMO
 
     uri = URI.parse("https://api.github.com/users/#{user}/events/public")
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = true
-    response = http.request(Net::HTTP::Get.new(uri.request_uri))
+    response = CachedHttpClient.get(uri)
 
     if response.code != "200"
       raise "Error when accessing GitHub: #{response.code} #{response.message}"

@@ -4,6 +4,7 @@ require 'net/http'
 require_relative '../model/event'
 require_relative '../model/query'
 require_relative 'service_helper'
+require_relative '../cached_http_client'
 
 class JiraService
   
@@ -40,8 +41,7 @@ class JiraService
     }
     uri = URI ("#{api_url}/search")
     uri.query = URI.encode_www_form(params)
-    http = Net::HTTP.new(uri.host, uri.port)
-    response = http.request(Net::HTTP::Get.new(uri.request_uri))
+    response = CachedHttpClient.get(uri)
 
     if response.code != "200"
       raise "Error when accessing Jira: #{response.code} #{response.message}"
