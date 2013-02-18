@@ -30,4 +30,8 @@ class RendererManager
     renderer_class.new(verbose, group)
   end
 
+  def self.list_formats
+    Dir["renderers/formats/*_renderer.rb"].map {|file| file.sub(/^([.a-z_\/])*\//,"").sub("_renderer.rb","")}
+  end
+
 end

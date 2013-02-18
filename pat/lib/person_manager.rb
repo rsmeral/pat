@@ -18,4 +18,8 @@ class PersonManager
       p
     end
   end
+
+  def self.list_persons
+    Dir["data/person/*"].map {|file| file.sub(/^([.a-z_\/])*\//,"")}
+  end
 end

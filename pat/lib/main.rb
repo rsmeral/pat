@@ -40,7 +40,7 @@ opt_parser = OptionParser.new do |opt|
     puts opt_parser
   end
   
-  opt.on("-c","--configurations [x,y,z]","Array", "comma-separated list of service configurations to query") do |configurations|
+  opt.on("-s","--services [x,y,z]","Array", "comma-separated list of services to query") do |configurations|
     options[:selected_configurations] = configurations.split(",") unless configurations.nil?
   end
   
@@ -48,14 +48,26 @@ opt_parser = OptionParser.new do |opt|
     options[:days] = days
   end
     
-  opt.on("-r","--renderer [format]","String", "output format; fallback to plaintext if not found") do |renderer|
+  opt.on("-f","--format [format]","String", "output format; fallback to plaintext if not found") do |renderer|
     options[:renderer] = renderer
   end
   
   opt.on("-g","--group [person,date,service]","Array", "comma-separated list; two element permutation of person,date,service; specifies grouping of events on output") do |group|
     options[:group] =  group.split(",") unless group.nil?
   end
+
+  opt.on("-l","--list persons|services|formats","list all configured persons, services or formats") do |thing|
+    puts list(thing)
+  end
   
+end
+
+def list(thing)
+  puts case thing
+  when "persons" then PersonManager.list_persons * "\n"
+  when "services" then ServiceManager.list_services * "\n"
+  when "formats" then RendererManager.list_formats * "\n"
+  end
 end
 
 opt_parser.parse!
