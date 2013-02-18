@@ -1,3 +1,4 @@
 --- !ruby/object:BugzillaService
 id: rh_bz
 instance_url: https://bugzilla.redhat.com
+default_user_suffix: "@redhat.com"

@@ -2,8 +2,20 @@ require 'yaml'
 
 class PersonManager
   
-  # Return person instance
+  # Return person instance from file if exists, or a synthetic person with all values equal to id
   def self.person(id)
-    Psych.load_file("data/person/#{id}")
+    begin 
+      # configured
+      p = Psych.load_file("data/person/#{id}")
+      p.configured = true
+      p
+    rescue 
+      # synthetic
+      h = Hash.new
+      h.default=id
+      p = Person.new(id, id, h)
+      p.configured = false
+      p
+    end
   end
 end

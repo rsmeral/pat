@@ -41,7 +41,7 @@ opt_parser = OptionParser.new do |opt|
   end
   
   opt.on("-c","--configurations [x,y,z]","Array", "comma-separated list of service configurations to query") do |configurations|
-    options[:selected_configurations] = configurations.nil? ? [] : configurations.split(",")
+    options[:selected_configurations] = configurations.split(",") unless configurations.nil?
   end
   
   opt.on("-d","--days [n]","Numeric", "number of past days from today to query") do |days|
@@ -53,7 +53,7 @@ opt_parser = OptionParser.new do |opt|
   end
   
   opt.on("-g","--group [person,date,service]","Array", "comma-separated list; two element permutation of person,date,service; specifies grouping of events on output") do |group|
-    options[:group] = group.nil? ? [] : group.split(",")
+    options[:group] =  group.split(",") unless group.nil?
   end
   
 end
@@ -67,16 +67,16 @@ end
 
 all_events = []
 
-# For each person
-selected_persons.each do |id|  
-  person = PersonManager.person(id)
+# For each enabled service configuration
+options[:selected_configurations].each do |service_id|
+  svc_instance = ServiceManager.service_instance(service_id)
+  
+  # For each selected person that has non-nil service mapping
+  selected_persons.each do |id|
+    person = PersonManager.person(id)
     
-  # For each service configuration
-  person.service_mappings.each_key do |service_id|
-    if options[:selected_configurations].nil? || options[:selected_configurations].include?(service_id) then
-      # Instantiate service
-      svc_instance = ServiceManager.service_instance(service_id)
-
+    if !person.service_mappings[service_id].nil?
+        
       # Prepare query
       query = Query.new(person)
       query.to = DateTime.now
@@ -85,9 +85,9 @@ selected_persons.each do |id|
       # Fetch data
       events = svc_instance.events(query)
       all_events.concat(events)
-    end# if selected
-  end# each service
-end# each person
+    end
+  end
+end
 
 renderer = Renderer.new(options[:verbose], options[:group], options[:renderer])
 puts renderer.render(all_events)

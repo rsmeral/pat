@@ -16,6 +16,8 @@ class BugzillaService
   
   # URL of the instance
   attr_accessor :instance_url
+  
+  attr_reader :default_user_suffix
 
   def events(query)
     bug_ids = bz_list(query)
@@ -65,7 +67,7 @@ class BugzillaService
     params = {
       f1: "reporter",
       o1: "equals",
-      v1: user_id(query.person),
+      v1: user_id(query.person).chomp(default_user_suffix)+default_user_suffix,
       
       f2: "creation_ts",
       o2: "greaterthan",
