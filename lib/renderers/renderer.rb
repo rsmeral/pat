@@ -1,5 +1,5 @@
 require_relative '../renderer_manager'
-require_relative 'message'
+require_relative '../model/message'
 
 class Renderer
   

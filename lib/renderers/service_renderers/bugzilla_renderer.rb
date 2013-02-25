@@ -1,4 +1,4 @@
-require_relative '../message'
+require_relative '../../model/message'
 require_relative 'service_renderer_helper'
 
 class BugzillaRenderer

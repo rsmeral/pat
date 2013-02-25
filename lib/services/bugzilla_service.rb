@@ -23,7 +23,6 @@ class BugzillaService
     bug_ids = bz_list(query)
     
     bugs = XmlSimple.xml_in(bz_query(bug_ids))
-    # bugs = XmlSimple.xml_in(File.read("demo/bz_#{query.person.id}.xml")) # DEMO
     
     (bugs["bug"].nil? ? {} : bugs["bug"]).map do |bug|
       event = event_from_xml(bug)
@@ -58,7 +57,6 @@ class BugzillaService
   end 
   
   def bz_list(query)
-    # return CSV.parse(File.read("demo/bz_#{query.person.id}.csv")).drop(1).collect { |item| item[0] } # DEMO
     
     params = {
       f1: "reporter",

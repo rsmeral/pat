@@ -6,6 +6,7 @@ class JsonRenderer
   def initialize(verbose, group)
   end
 
+  # Returns a JSON string representation of the messages list
   def render(messages)
     Message.class_eval do
       def to_json(a)

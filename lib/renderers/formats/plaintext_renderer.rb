@@ -1,4 +1,3 @@
-
 class PlaintextRenderer
   attr_accessor :verbose, :headers
 
@@ -7,6 +6,7 @@ class PlaintextRenderer
     @headers = [:date, :time, :person, :service] - group.map {|x| x.to_sym}
   end
 
+  # Returns a formatted plain text representation of the messages
   def render(messages, depth = 0)
     ret = ""
     if messages.class == Hash
@@ -21,6 +21,9 @@ class PlaintextRenderer
 
   private
 
+  
+  ###  Helper methods
+  
   def render_hash(messages, depth)
     ret = ""
     messages.each_pair do |header, hash|
@@ -65,12 +68,7 @@ class PlaintextRenderer
   end
 
   def indent(str, depth)
-    out = ""
-    str.lines("\n") do |line|
-      out << (" "*depth) + line
-    end
-    out
-    # string.gsub("\n", "\n ")# + (" " * (width * 2)))
+    str.lines("\n").map { |line| (" "*depth) + line }.join
   end
 
   def header_data
