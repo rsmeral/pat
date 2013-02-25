@@ -4,6 +4,7 @@ Project Activity Tracker
 Simple extensible command line utility for retrieving events from services. Useful for tracking activity across teams and projects.
 
 Currently supported services are *Github*, *JIRA* and *Bugzilla*.
+Available formats include pretty plaintext and JSON.
 
 ## Usage
 
