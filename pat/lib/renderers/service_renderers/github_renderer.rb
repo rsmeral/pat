@@ -48,9 +48,9 @@ class GithubRenderer
         content = payload["commits"][0]["message"]
         repo = event.data["repo"]["name"]
     end
-    object.lstrip
+    object.to_s.lstrip
     ret = Message.new
-    ret.header = "#{action.capitalize} #{object}#{repo}"
+    ret.header = "#{action.to_s.capitalize} #{object}#{repo}"
     if verbose && !content.nil?
       ret.content = content
     end

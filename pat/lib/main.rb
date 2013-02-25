@@ -38,6 +38,7 @@ opt_parser = OptionParser.new do |opt|
 
   opt.on("-h","--help","help") do
     puts opt_parser
+    exit
   end
   
   opt.on("-s","--services [x,y,z]","Array", "comma-separated list of services to query") do |configurations|
