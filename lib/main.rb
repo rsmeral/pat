@@ -4,6 +4,7 @@ require_relative 'person_manager'
 require_relative 'service_manager'
 require_relative 'model/person'
 require_relative 'renderers/renderer'
+require_relative 'cached_http_client'
 
 Dir["services/*rb"].each {|file| require_relative file }
 
@@ -32,6 +33,7 @@ opt_parser = OptionParser.new do |opt|
 
   opt.on("-f","--force-update","bypass cache") do
     options[:force] = true
+    CachedHttpClient.class_variable_set("@@force", options[:force])
   end
 
   opt.on("-h","--help","help") do

@@ -8,6 +8,7 @@ require 'date'
 # all POST requests pass through.
 class CachedHttpClient
   
+  @@force = false
   @@interval = 300 # seconds
   @@cache = "data/cache"
   
@@ -22,12 +23,12 @@ class CachedHttpClient
       if (DateTime.now - last_fetched)*24*60*60 > @@interval
         cache_refresh_get(uri)
       else # cached response is not old, return it
-        # HOW TO DO GLOBAL OPTIONS? NEED TO GET options[:force]
-        # if options[:force]
-        #   cache_refresh_get(uri) 
-        # else
+
+        if @@force
+          cache_refresh_get(uri) 
+        else
           return Psych.load(cached_file.lines.to_a[1..-1].join)
-        # end
+        end
       end
     else # don't have a cached response, get and store
       cache_refresh_get(uri) 
