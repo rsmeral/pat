@@ -35,11 +35,11 @@ For demonstration, 2 persons and three services are preconfigured:
 
 The simplest query which prints events that occurred in all services in the last week for the user `rsmeral` in plain text format, grouped by person and date:
 
-    `pat rsmeral`
+    pat rsmeral
 
-Query for events in the `jboss_jira` in the last 2 weeks, bypassing cache, formatting as JSON, without grouping, with all details for users rsmeral and okiss:
+Query for events in the `jboss_jira` in the last 2 weeks, bypassing cache, formatting as JSON, without grouping, with all details for users `rsmeral` and `okiss`:
 
-    `pat -s jboss_jira -d 14 -f -r json -g "" -v rsmeral okiss`
+    pat -s jboss_jira -d 14 -f -r json -g "" -v rsmeral okiss
 
 ## Configuration
 
@@ -53,9 +53,9 @@ id: jboss_jira
 instance_url: http://issues.jboss.org
 api_path: /rest/api/latest
 ```
-The individual properties may be different for each service. 
+Only `id` is required. The individual properties may be different for each service. 
 
-User configuration:
+### User configuration:
 ```
 --- !ruby/object:Person
 id: rsmeral
@@ -65,3 +65,4 @@ service_mappings:
   github_com: rsmeral
   rh_bz: rsmeral@redhat.com
 ```
+Only `id` and `name` are required. 
