@@ -23,7 +23,6 @@ class CachedHttpClient
       if (DateTime.now - last_fetched)*24*60*60 > @@interval
         cache_refresh_get(uri)
       else # cached response is not old, return it
-
         if @@force
           cache_refresh_get(uri) 
         else
