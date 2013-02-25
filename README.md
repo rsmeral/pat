@@ -34,17 +34,19 @@ For demonstration, 2 persons and three services are preconfigured:
 * [Redhat Bugzilla](http://bugzilla.redhat.com)
 
 The simplest query which prints events that occurred in all services in the last week for the user `rsmeral` in plain text format, grouped by person and date:
-    pat rsmeral
+
+    `pat rsmeral`
 
 Query for events in the `jboss_jira` in the last 2 weeks, bypassing cache, formatting as JSON, without grouping, with all details for users rsmeral and okiss:
-    pat -s jboss_jira -d 14 -f -r json -g "" -v rsmeral okiss
+
+    `pat -s jboss_jira -d 14 -f -r json -g "" -v rsmeral okiss`
 
 ## Configuration
 
 All configuration files reside in `lib/data`, which contains a `person` and `service` subfolders. These contain YAML representations of person and service configurations, respectively.
 This program honors the _Convention over configuration_ principle and thus any queried person that is not configured is assumed to have the same username in all services. Once a person is configured, only the services listed in her `service_mappings` will be queried.
 
-A service configuration might look like the following:
+### Service configuration
 ```
 --- !ruby/object:JiraService
 id: jboss_jira
@@ -53,7 +55,7 @@ api_path: /rest/api/latest
 ```
 The individual properties may be different for each service. 
 
-A user configuration:
+User configuration:
 ```
 --- !ruby/object:Person
 id: rsmeral
