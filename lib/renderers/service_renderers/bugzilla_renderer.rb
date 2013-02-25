@@ -27,5 +27,4 @@ class BugzillaRenderer
     ret
   end
   
-  
 end

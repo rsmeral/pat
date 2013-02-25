@@ -1,6 +1,11 @@
 require_relative '../renderer_manager'
 require_relative '../model/message'
 
+# Main renderer
+# * sorts events by time
+# * calls service renderers
+# * transforms list of messages into a equivalence class map
+# * calls format renderer
 class Renderer
   
   attr_accessor :verbose, :group, :format
@@ -27,8 +32,6 @@ class Renderer
   
   # convert message list to map of equivalence classes
   def make_eq(message_list, depth)
-    # puts message_list.inspect
-    # puts "#{depth} / #{ group.length}"
     if depth < group.length
       res = {}
       message_list.each do |message|
@@ -43,6 +46,7 @@ class Renderer
     end
   end
 
+  # Return a renderer for a service
   def service_renderer(service)
     if !@renderer_cache.has_key?(service)
       @renderer_cache[service] = @renderer_manager.service_renderer(service)

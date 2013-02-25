@@ -1,5 +1,6 @@
 module ServiceRendererHelper
 
+  # Transforms an event into a Message object that is passed to renderers
   def message_from_event(event)
     message = process_event(event)
     message.date = event.time.strftime("%b %d")

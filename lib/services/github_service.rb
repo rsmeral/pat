@@ -8,9 +8,11 @@ require_relative 'service_helper'
 class GithubService
 
   include ServiceHelper
-  
+
+  # ID of this service instance  
   attr_accessor :id
   
+  # Returns a list of events satisfying the query
   def events(query)
     ret = Array.new
     json_array = JSON.parse(github_query(user_id(query.person)))
@@ -37,7 +39,6 @@ class GithubService
   end
 
   def github_query(user)
-    # return File.read("demo/git_#{user}.txt") # DEMO
 
     uri = URI.parse("https://api.github.com/users/#{user}/events/public")
     response = CachedHttpClient.get(uri)

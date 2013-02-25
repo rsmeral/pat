@@ -6,10 +6,7 @@ require_relative 'model/person'
 require_relative 'renderers/renderer'
 
 Dir["services/*rb"].each {|file| require_relative file }
-# Dir["renderers/*"].each {|file| require_relative file }
 
-# begin
-  
 # Defaults
 options = {
   days: 7,
@@ -27,6 +24,7 @@ opt_parser = OptionParser.new do |opt|
   opt.banner = "Usage: pat [OPTIONS] PERSON [PERSON...]"
   opt.separator  ""
   opt.separator  "Options"
+  opt.separator  ""
 
   opt.on("-v","--verbose","turns on long output") do
     options[:verbose] = true
@@ -41,11 +39,11 @@ opt_parser = OptionParser.new do |opt|
     exit
   end
   
-  opt.on("-s","--services [x,y,z]","Array", "comma-separated list of services to query") do |configurations|
+  opt.on("-s","--services [x,y,z]","Array", "comma-separated list of services to query; default: all") do |configurations|
     options[:selected_configurations] = configurations.split(",") unless configurations.nil?
   end
   
-  opt.on("-d","--days [n]","Numeric", "number of past days from today to query") do |days|
+  opt.on("-d","--days [n]","Numeric", "number of past days from today to query; default: 7") do |days|
     options[:days] = days
   end
     
@@ -53,12 +51,13 @@ opt_parser = OptionParser.new do |opt|
     options[:renderer] = renderer
   end
   
-  opt.on("-g","--group [person,date,service]","Array", "comma-separated list; two element permutation of person,date,service; specifies grouping of events on output") do |group|
+  opt.on("-g","--group [person,date,service]","Array", "comma-separated list; two element permutation", "of person,date,service; specifies grouping of events on output") do |group|
     options[:group] =  group.split(",") unless group.nil?
   end
 
   opt.on("-l","--list persons|services|formats","list all configured persons, services or formats") do |thing|
     puts list(thing)
+    exit
   end
   
 end
@@ -106,8 +105,3 @@ end
 
 renderer = Renderer.new(options[:verbose], options[:group], options[:renderer])
 puts renderer.render(all_events)
-  
-# rescue Exception => e
-#   puts "Error!"
-#   puts e
-# end

@@ -10,6 +10,7 @@ class JiraService
   
   include ServiceHelper
   
+  # ID of this service instance
   attr_accessor :id
   
   # URL of the instance, e.g. http://issues.jboss.org
@@ -18,6 +19,7 @@ class JiraService
   # API path, e.g. /rest/api/latest
   attr_accessor :api_path
   
+  # Returns a list of events satisfying the query
   def events(query)
     JSON.parse(jira_query(query))["issues"].map do |json_evt|
       event = event_from_json(json_evt)

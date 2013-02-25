@@ -8,17 +8,23 @@ require_relative '../model/event'
 require_relative '../model/query'
 require_relative 'service_helper'
 
+# Requires two requests
+# * one for the bug list CSV
+# * second for the XML with actual bugs
 class BugzillaService
   
   include ServiceHelper
   
+  # ID of this service instance
   attr_accessor :id
   
   # URL of the instance
   attr_accessor :instance_url
   
+  # The suffix to add to every username
   attr_reader :default_user_suffix
 
+  # Returns a list of events satisfying the query
   def events(query)
     bug_ids = bz_list(query)
     
@@ -38,7 +44,7 @@ class BugzillaService
     event
   end
 
-  
+  # Retrieve the XML with bugs for given IDs
   def bz_query(bug_ids)
     params = {
       ctype: "xml",
@@ -56,6 +62,7 @@ class BugzillaService
     response.body
   end 
   
+  # Get a list of bugs
   def bz_list(query)
     
     params = {

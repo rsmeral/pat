@@ -2,6 +2,10 @@ require 'date'
 
 # TODO: Needs refactoring...
 
+# Ugly HTTP request caching based on URL
+# Caches HTTP responses serialized to YAML in a cache folder for a configured 
+# amount of time. The file names are SHA hashes of the URLs. Only caches GET, 
+# all POST requests pass through.
 class CachedHttpClient
   
   @@interval = 300 # seconds
