@@ -1,1 +1,1 @@
-/usr/bin/ruby -C lib main.rb "$@"
+ruby -C lib main.rb "$@"

@@ -56,7 +56,7 @@ api_path: /rest/api/latest
 ```
 Only `id` is required. The individual properties may be different for each service. 
 
-### User configuration:
+### User configuration
 ```
 --- !ruby/object:Person
 id: rsmeral
