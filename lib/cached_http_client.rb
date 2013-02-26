@@ -11,6 +11,7 @@ class CachedHttpClient
   @@force = false
   @@interval = 300 # seconds
   @@cache = "data/cache"
+  Dir.mkdir(@@cache) unless Dir.exist?(@@cache)
   
   def self.get(uri)
     # have cached response?
