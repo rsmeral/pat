@@ -1,4 +1,5 @@
 require_relative '../../model/message'
+require_relative 'service_renderer_helper'
 
 class GithubRenderer
 
@@ -17,10 +18,17 @@ class GithubRenderer
       when /Comment/
         action = "commented on"
         content = payload["comment"]["body"]
-        object = case event.data["type"]
-          when "CommitCommentEvent"; "commit"
-          when "IssueCommentEvent"; "issue \#" +  payload["issue"]["number"].to_s
-          when "PullRequestReviewCommentEvent"; "pull request"
+        case event.data["type"]
+          when "CommitCommentEvent"
+            object = "commit"
+          when "IssueCommentEvent"
+            if payload["pull_request"] != nil
+              object = "pull request \#" + payload["issue"]["number"].to_s + " " + payload["issue"]["title"]
+            else
+              object = "issue \#" +  payload["issue"]["number"].to_s
+            end
+          when "PullRequestReviewCommentEvent"
+            object = "pull request \#" + payload["pull_request"]["number"].to_s + " " + payload["pull_request"]["title"]
         end
       when "CreateEvent"
         action = "created"
@@ -43,7 +51,7 @@ class GithubRenderer
       when "PushEvent"
         action = "pushed "
         action += payload["size"].to_s + " commits " if verbose
-        action += "to"
+        action += "to "
         object = "repository "
         content = payload["commits"][0]["message"]
         repo = event.data["repo"]["name"]

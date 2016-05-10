@@ -49,6 +49,16 @@ class CachedHttpClient
     "#{@@cache}/#{uri_hash}"
   end
   
+  def self.http_basic_auth_get(uri,user,password)
+    ssl = uri.to_s.start_with?("https")
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = ssl
+    request = Net::HTTP::Get.new(uri.request_uri)
+    request.basic_auth user, password
+    
+    http.request(request)
+  end
+  
   def self.http_get(uri)
     ssl = uri.to_s.start_with?("https")
     http = Net::HTTP.new(uri.host, uri.port)

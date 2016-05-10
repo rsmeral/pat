@@ -12,10 +12,24 @@ class GithubService
   # ID of this service instance  
   attr_accessor :id
   
+  # personal access token
+  attr_accessor :token
+  
+  # repos to scan for events, in addition to the user events
+  attr_accessor :repos
+  
   # Returns a list of events satisfying the query
   def events(query)
     ret = Array.new
-    json_array = JSON.parse(github_query(user_id(query.person)))
+    page = 1
+    json_array = Array.new
+    loop do
+      json_array.concat JSON.parse(github_query(user_id(query.person), page))
+      puts "page " + page.to_s
+      page += 1
+      break if DateTime.iso8601(json_array[-1]["created_at"]) < query.from
+    end
+    
     json_array.each do |event_json|
       event = event_from_json(event_json)
       event.person = query.person
@@ -38,11 +52,14 @@ class GithubService
     event
   end
 
-  def github_query(user)
-
-    uri = URI.parse("https://api.github.com/users/#{user}/events/public")
-    response = CachedHttpClient.get(uri)
-
+  def github_query(user, page=1)
+    uri = URI.parse("https://api.github.com/users/#{user}/events?page=#{page}")
+    if :token != nil
+      response = CachedHttpClient.http_basic_auth_get(uri,user,token)
+    else
+      response = CachedHttpClient.get(uri)
+    end
+    
     if response.code != "200"
       raise "Error when accessing GitHub: #{response.code} #{response.message}"
     end
