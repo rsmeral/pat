@@ -1,7 +1,0 @@
---- !ruby/object:Person
-id: okiss
-name: Oliver Kiss
-service_mappings:
-  jboss_jira: okiss
-  github_com: okiss
-  rh_bz: okiss

@@ -22,7 +22,7 @@ class Renderer
       b.time <=> a.time
     end.map do |event|
       service_renderer(event.service).message_from_event(event)
-    end
+    end.compact
 
     # create deep equivalence class map
     message_classes = make_eq(messages, 0)

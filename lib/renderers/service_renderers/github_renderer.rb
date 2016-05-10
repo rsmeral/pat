@@ -22,17 +22,21 @@ class GithubRenderer
           when "CommitCommentEvent"
             object = "commit"
           when "IssueCommentEvent"
-            if payload["pull_request"] != nil
+            if payload["issue"]["pull_request"] != nil
               object = "pull request \#" + payload["issue"]["number"].to_s + " " + payload["issue"]["title"]
             else
-              object = "issue \#" +  payload["issue"]["number"].to_s
+              object = "issue \#" +  payload["issue"]["number"].to_s + " " + payload["issue"]["title"]
             end
           when "PullRequestReviewCommentEvent"
             object = "pull request \#" + payload["pull_request"]["number"].to_s + " " + payload["pull_request"]["title"]
         end
       when "CreateEvent"
         action = "created"
-        object =  payload["ref_type"] + " " +  payload["ref"]
+        if payload["ref_type"] == "repository" 
+          object = payload["ref_type"]
+        else
+          object = payload["ref_type"] + " " +  payload["ref"]
+        end
       when "DeleteEvent"
         action = "deleted"
         object =  payload["ref_type"] + " " +  payload["ref"]
@@ -46,15 +50,18 @@ class GithubRenderer
         content = payload["issue"]["body"]
       when "PullRequestEvent"
         action = payload["action"]
-        object = "pull request \#" +  payload["number"].to_s
+        object = "pull request \#" +  payload["number"].to_s + " " + payload["pull_request"]["title"]
         content = payload["pull_request"]["body"]
       when "PushEvent"
         action = "pushed "
         action += payload["size"].to_s + " commits " if verbose
-        action += "to "
+        action += "to"
         object = "repository "
         content = payload["commits"][0]["message"]
         repo = event.data["repo"]["name"]
+      when "WatchEvent"
+        # ignore WatchEvents
+        return nil
     end
     object.to_s.lstrip
     ret = Message.new

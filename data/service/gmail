@@ -1,0 +1,9 @@
+--- !ruby/object:ImapService
+id: gmail
+server: imap.gmail.com
+ssl: true
+port: 993
+folders:
+  - "[Gmail]/Sent Mail"
+username:
+password: 

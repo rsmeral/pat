@@ -1,7 +1,7 @@
 --- !ruby/object:Person
 id: rsmeral
-name: Ron Smeral
+name: Ron Šmeral
 service_mappings:
   jboss_jira: rsmeral
   github_com: rsmeral
-  rh_bz: rsmeral@redhat.com
+  rh_bz: rsmeral

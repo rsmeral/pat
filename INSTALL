@@ -1,0 +1,5 @@
+# Installation instructions
+
+Make sure you have Ruby installed. pat is tested with Ruby 2.0.0.
+
+Run `bundle install` in the root directory of pat.

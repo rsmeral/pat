@@ -13,7 +13,7 @@ class BugzillaRenderer
 
   def process_event(event)
     d = event.data
-    header = "Filed \##{d["bug_id"][0]} #{d["short_desc"][0]}"
+    header = "Involved in \##{d["bug_id"][0]} #{d["short_desc"][0]}"
     
     content = ""
     

@@ -1,4 +1,0 @@
---- !ruby/object:JiraService
-id: jboss_jira
-instance_url: http://issues.jboss.org
-api_path: /rest/api/latest

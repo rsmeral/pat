@@ -1,83 +1,113 @@
 require 'date'
+require 'net/https'
 
-# TODO: Needs refactoring...
-
-# Ugly HTTP request caching based on URL
+# Simple HTTP request cache
+# 
 # Caches HTTP responses serialized to YAML in a cache folder for a configured 
-# amount of time. The file names are SHA hashes of the URLs. Only caches GET, 
-# all POST requests pass through.
+# amount of time. The file names are SHA hashes of the request.
+# 
 class CachedHttpClient
+  
+  class SimpleRequest
+    
+    attr_accessor :uri, :method, :user, :password, :data
+    
+    def initialize(uri=nil, method=nil, user=nil, password=nil, data=nil)
+      @uri = uri
+      @method = method
+      @user = user
+      @password = password
+      @data = data
+    end
+    
+    def eql? (other)
+      other.uri == @uri &&
+      other.method == @method &&
+      other.user == @user &&
+      other.password == @password &&
+      other.data == @data
+    end
+    
+    def hash
+      [@uri, @method, @user, @password, @data].hash
+    end
+    
+  end
   
   @@force = false
   @@interval = 300 # seconds
-  @@cache = "data/cache"
-  Dir.mkdir(@@cache) unless Dir.exist?(@@cache)
+  @@ua = "pat/1.0"
+  @@data_dir = "/tmp/pat-http-cache"
   
-  def self.get(uri)
-    # have cached response?
-    file_name = cache_filename(uri)
-    if File.exist?(file_name)
+  def initialize(insecure=false)
+    @insecure = insecure
+  end
+  
+  def get(uri, user=nil, password=nil)
+    retrieve(SimpleRequest.new(uri, Net::HTTP::Get, user, password))
+  end
+  
+  def post(uri, data, user=nil, password=nil)
+    retrieve(SimpleRequest.new(uri, Net::HTTP::Post, user, password, data))
+  end
+  
+  def retrieve(sreq)
+    file_name = "#{cache_dir}/#{cache_key(sreq)}"
+    if File.exist?(file_name) # check if cache entry valid
       cached_file = File.read(file_name)
       last_fetched = DateTime.parse(cached_file.lines.first.chomp)
       
-      # is cached response old? refresh it
-      if (DateTime.now - last_fetched)*24*60*60 > @@interval
-        cache_refresh_get(uri)
-      else # cached response is not old, return it
+      if (DateTime.now - last_fetched)*24*60*60 > @@interval # cache miss
+        cache_refresh(sreq)
+      else # cache hit
         if @@force
-          cache_refresh_get(uri) 
+          cache_refresh(sreq)
         else
           return Psych.load(cached_file.lines.to_a[1..-1].join)
         end
       end
-    else # don't have a cached response, get and store
-      cache_refresh_get(uri) 
+    else # cache miss, get and store
+      cache_refresh(sreq)
     end
   end
   
-  def self.cache_refresh_get(uri) 
-    response = http_get(uri)
-    File.open(cache_filename(uri), 'w') do |file| 
+  def cache_refresh(sreq)
+    response = http_request(sreq)
+    File.open("#{cache_dir}/#{cache_key(sreq)}", 'w') do |file| 
       file.write(DateTime.now.to_s + "\n")
       file.write(response.to_yaml)
     end
-    return response
+    response
   end
   
-  def self.cache_filename(uri)
-    uri_hash = Digest::SHA2.hexdigest(uri.to_s)
-    "#{@@cache}/#{uri_hash}"
+  def cache_key(sreq)
+    Dir.mkdir(cache_dir) unless Dir.exist?(cache_dir)
+    cat = [:uri, :method, :user, :password, :data].reduce("") do |acc, e|
+      acc + sreq.send(e).to_s
+    end
+    Digest::SHA2.hexdigest(cat)
   end
   
-  def self.http_basic_auth_get(uri,user,password)
-    ssl = uri.to_s.start_with?("https")
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = ssl
-    request = Net::HTTP::Get.new(uri.request_uri)
-    request.basic_auth user, password
+  def cache_dir
+    "#{@@data_dir}/cache"
+  end
+  
+  def http_request(sreq)
+    # Set up HTTP connection
+    http = Net::HTTP.new(sreq.uri.host, sreq.uri.port)
+    http.use_ssl = sreq.uri.to_s.start_with?("https")
+    if @insecure
+      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    end
     
-    http.request(request)
-  end
-  
-  def self.http_get(uri)
-    ssl = uri.to_s.start_with?("https")
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = ssl
-    http.request(Net::HTTP::Get.new(uri.request_uri))
-  end
+    # Instantiate request object of proper type
+    req = sreq.method.new(sreq.uri.request_uri)
     
-  # NO CACHING FOR POST YET
-  
-  def self.post(uri,data)
-    http_post(uri,data)
-  end
-  
-  def self.http_post(uri, data)
-    ssl = uri.to_s.start_with?("https")
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = ssl
-    req = Net::HTTP::Post.new(uri.request_uri)
-    req.body = data;
+    # Set up headers
+    req.basic_auth(sreq.user, sreq.password) unless sreq.user.nil? || sreq.password.nil?
+    req.body = sreq.data unless sreq.data == nil
+    req["User-Agent"] = @@ua
+    
     http.request(req)
   end
   

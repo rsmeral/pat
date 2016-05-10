@@ -1,3 +1,4 @@
 --- !ruby/object:GithubService
 id: github_com
+# optional token
 token: 

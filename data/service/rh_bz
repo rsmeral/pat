@@ -1,4 +1,5 @@
 --- !ruby/object:BugzillaService
 id: rh_bz
 instance_url: https://bugzilla.redhat.com
+# Optional suffix. Useful when all users have addresses in the same domain.
 default_user_suffix: "@redhat.com"

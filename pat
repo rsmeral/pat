@@ -1,1 +1,1 @@
-ruby -C lib main.rb "$@"
+ruby -C lib cli.rb --data-dir "data" "$@"

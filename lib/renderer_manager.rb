@@ -26,7 +26,7 @@ class RendererManager
     begin
       renderer_class = Object.const_get(renderer_name)
     rescue
-      $stderr.puts "WARNING: Renderer #{renderer_name} not found. Falling back to plaintext."
+      Logging.logger.warn("Renderer #{renderer_name} not found. Falling back to plaintext.")
       renderer_class = Object.const_get("PlaintextRenderer")
     end
 

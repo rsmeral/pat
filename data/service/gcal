@@ -1,0 +1,6 @@
+--- !ruby/object:CaldavService
+id: gcal
+# Warning: This is the old unsupported endpoint for CalDAV
+uri: https://www.google.com/calendar/dav/$user/events/
+username: 
+password: 

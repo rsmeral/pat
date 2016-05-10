@@ -3,14 +3,24 @@ require 'date'
 require 'net/http'
 require 'net/https'
 require 'csv'
+require 'pp'
 require 'xmlsimple'
 require_relative '../model/event'
 require_relative '../model/query'
 require_relative 'service_helper'
 
-# Requires two requests
-# * one for the bug list CSV
-# * second for the XML with actual bugs
+# Bugzilla service
+# 
+# Reports modifications to bugs where the person is related in any way (reporter, assignee, commenter, 
+# docs contact, qa contact). So, the report only states "Involved in..." without any more precision.
+# That doesn't always mean that the person has made that modification, but most likely was at least notified.
+# 
+# No authentication. Only public data.
+# 
+# Issues two HTTP requests
+# * one GET for the bug list CSV
+# * one POST for the XML with actual bugs
+#
 class BugzillaService
   
   include ServiceHelper
@@ -21,13 +31,15 @@ class BugzillaService
   # URL of the instance
   attr_accessor :instance_url
   
-  # The suffix to add to every username
+  # The suffix to add to every username. Can be blank.
   attr_reader :default_user_suffix
 
   # Returns a list of events satisfying the query
   def events(query)
+    Logging.logger.debug("Bugzilla: Getting bug list for #{user_id(query.person)}")
     bug_ids = bz_list(query)
     
+    Logging.logger.debug("Bugzilla: Getting bug details for #{user_id(query.person)}")
     bugs = XmlSimple.xml_in(bz_query(bug_ids))
     
     (bugs["bug"].nil? ? {} : bugs["bug"]).map do |bug|
@@ -39,7 +51,8 @@ class BugzillaService
   
   def event_from_xml(bug)
     event = Event.new(self)
-    event.time = DateTime.strptime(bug["creation_ts"][0], "%F %T %z")
+    
+    event.time = DateTime.strptime(bug["delta_ts"][0], "%F %T %z")
     event.data = bug
     event
   end
@@ -53,7 +66,7 @@ class BugzillaService
     }
     uri = URI ("#{instance_url}/show_bug.cgi")
     data = URI.encode_www_form(params)
-    response = CachedHttpClient.post(uri, data)
+    response = CachedHttpClient.new.post(uri, data)
     
     if response.code != "200"
       raise "Error when accessing Bugzilla: #{response.code} #{response.message}"
@@ -64,30 +77,35 @@ class BugzillaService
   
   # Get a list of bugs
   def bz_list(query)
-    
     params = {
-      f1: "reporter",
-      o1: "equals",
-      v1: user_id(query.person).chomp(default_user_suffix)+default_user_suffix,
+      f1: "delta_ts",
+      o1: "greaterthan",
+      v1: query.from.to_date.strftime("%Y-%m-%d"),
       
-      f2: "creation_ts",
-      o2: "greaterthan",
-      v2: query.from.to_date,
+      f2: "delta_ts",
+      o2: "lessthan",
+      v2: query.to.to_date.strftime("%Y-%m-%d"),
       
-      f3: "creation_ts",
-      o3: "lessthan",
-      v3: query.to.to_date,
+      email1: default_user_suffix.nil? ? user_id(query.person) : user_id(query.person).chomp(default_user_suffix)+default_user_suffix,
       
-      bug_status: ["NEW", "ASSIGNED", "POST", "MODIFIED", "ON_DEV", "ON_QA", "VERIFIED", "RELEASE_PENDING", "CLOSED"],
+      emailassigned_to1: "1",
+      emaildocs_contact1: "1",
+      emaillongdesc1: "1",
+      emailqa_contact1: "1",
+      emailreporter1: "1",
+      emailtype1: "substring",
+      
       query_format: "advanced",
       ctype: "csv"
     }
+    
+    
     uri = URI ("#{instance_url}/buglist.cgi")
     uri.query = URI.encode_www_form(params)
-    response = CachedHttpClient.get(uri)
+    response = CachedHttpClient.new.get(uri)
 
     if response.code != "200"
-      raise 'Error when accessing Jira: #{response.code} #{response.message}'
+      raise 'Error when accessing Bugzilla: #{response.code} #{response.message}'
     end
     
     CSV.parse(response.body).drop(1).collect { |item| item[0] }
