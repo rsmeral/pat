@@ -55,8 +55,8 @@ class CaldavService
     ret = Array.new
     
     set = Set.new
-    
-    caldav_query(query).each do |vevent|
+        
+    (caldav_query(query) || []).each do |vevent|
       
       recurrent_occurrences = list_occurrences_within_range(vevent, query.from, query.to)
       
